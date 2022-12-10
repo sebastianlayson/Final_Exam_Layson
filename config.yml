@@ -1,0 +1,58 @@
+---
+- hosts: all
+  become: true
+  pre_tasks:
+
+  - name: Install Updates (Ubuntu)
+    tags: always
+    apt:
+      update_cache: yes
+    when: ansible_distribution == "Ubuntu"
+
+  - name: Install Updates (CentOS)
+    tags: always
+    dnf:
+      update_only: yes
+      update_cache: yes
+    when: ansible_distribution == "CentOS"
+
+
+
+- name: Install Enterprise Server (Apache)
+  hosts: all
+  tasks:
+
+  - name: Install Apache (Ubuntu)
+    apt:
+      name:
+        - apache2
+      state: latest
+    when: ansible_distribution == "Ubuntu"
+
+  - name: Install Apache (CentOS)
+    yum:
+      name:
+        - httpd
+      state: latest
+    when: ansible_distribution == "CentOS"
+
+- name: Install Monitoring Tools
+  hosts: all
+  become: true
+  tasks:
+
+  - name: Install Nagios (Ubuntu)
+    apt:
+      name:
+        - nagios4
+      state: latest
+    when: ansible_distribution == "Ubuntu"
+
+  - name: Install Nagios (CentOS)
+    yum:
+      name:
+        - nagios
+      state: latest
+    when: ansible_distribution == "CentOS"
+
+
